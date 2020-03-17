@@ -33,6 +33,3 @@ plt.imshow(im)
 
 # Author: @egyptianf
 
-def preporocess(images):
-    pass
-# End
