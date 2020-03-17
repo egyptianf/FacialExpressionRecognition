@@ -22,17 +22,3 @@ for f1 in files:
     print(dataset[-1])
 im = Image.open("projectImage\\dataset\\anger\\S010_004_00000017.png")
 plt.imshow(im)
-
-
-# We will add code here
-# We will also add code here
-
-
-# My code is finished
-
-
-# Author: @egyptianf
-
-def preporocess(images):
-    pass
-# End
