@@ -2,8 +2,6 @@ import cv2
 import os
 import platform
 import glob
-# Importing Image module from PIL package
-from PIL import Image
 import matplotlib.pyplot as plt
 
 operating_system = platform.system()
@@ -21,8 +19,14 @@ for f1 in files:
     photos = glob.glob(dataset_path)
     dataset[-1] = []
     for f2 in photos:
-        img = Image.open(f2)
+        img = cv2.imread(f2)
         dataset[-1].append(img)
-    print(dataset[-1])
-im = Image.open("projectImage" + d + "dataset" + d + "anger" + d + "S010_004_00000017.png")
+    # print(dataset[-1])
+
+
+fig = plt.figure(figsize=(15, 15))
+im = cv2.imread("projectImage" + d + "dataset" + d + "anger" + d + "S010_004_00000017.png")
+fig.add_subplot(3, 3, 1)
 plt.imshow(im)
+
+plt.show()
