@@ -22,3 +22,4 @@ for f1 in files:
     print(dataset[-1])
 im = Image.open("projectImage\\dataset\\anger\\S010_004_00000017.png")
 plt.imshow(im)
+
