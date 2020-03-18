@@ -1,12 +1,16 @@
 import cv2
 import os
+import platform
 import glob
 # Importing Image module from PIL package
 from PIL import Image
 import matplotlib.pyplot as plt
 
-
-img_dir = "projectImage\\dataset"
+operating_system = platform.system()
+d = '/'
+if operating_system == 'Windows':
+    d = '\\'
+img_dir = "projectImage" + d + "dataset"
 data_path = os.path.join(img_dir, '*')
 files = glob.glob(data_path)
 dataset = []
@@ -20,6 +24,5 @@ for f1 in files:
         img = Image.open(f2)
         dataset[-1].append(img)
     print(dataset[-1])
-im = Image.open("projectImage\\dataset\\anger\\S010_004_00000017.png")
+im = Image.open("projectImage" + d + "dataset" + d + "anger" + d + "S010_004_00000017.png")
 plt.imshow(im)
-
