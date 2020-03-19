@@ -1,29 +1,22 @@
 import cv2
 import os
 import glob
-# Importing Image module from PIL package
-from PIL import Image
+#Importing Image module from PIL package
+#from PIL import Image
 import matplotlib.pyplot as plt
 
 
-img_dir = "projectImage\\dataset"
-data_path = os.path.join(img_dir, '*')
-files = glob.glob(data_path)
-dataset = []
 
-for f1 in files:
-    dataset.append(os.path.basename(f1))
-    dataset_path = os.path.join(f1, '*g')
-    photos = glob.glob(dataset_path)
-    dataset[-1] = []
-    for f2 in photos:
-        img = Image.open(f2)
-        dataset[-1].append(img)
-    print(dataset[-1])
-im = Image.open("projectImage\\dataset\\anger\\S010_004_00000017.png")
-plt.imshow(im)
+im = cv2.imread('C:\\Users\\ahmedelsayed\\Desktop\\year3\\term2\\imageprocessing\\projectImage\\dataset\\anger\\S010_004_00000017.png')
+gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+blur = cv2.GaussianBlur(gray,(5,5),0)
 
-
+plt.subplot(221)
+plt.imshow(im,'gray')
+plt.title('ORIGINAL')
+plt.subplot(222)
+plt.imshow(blur,'gray')
+plt.title('GRAY')
 
 #We will add code here
 #We will also add code here
