@@ -43,6 +43,12 @@ img_perx = cv2.filter2D(gray,-1,kernelx)
 img_pery = cv2.filter2D(gray,-1,kernely)
 imgper = img_perx + img_pery
 
+# Gaussian
+blur = cv2.GaussianBlur(gray,(5,5),0)
+
+
+
+
 fig.add_subplot(3, 3, 1)
 plt.imshow(im, cmap=plt.cm.gray)
 plt.title("Image", fontdict={'fontsize': 15})
@@ -79,5 +85,11 @@ plt.title('Sobel')
 fig.add_subplot(3, 3, 8)
 plt.imshow(imgper, cmap=plt.cm.gray)
 plt.title('Perwitt')
+
+fig.add_subplot(3, 3, 9)
+plt.imshow(blur, cmap=plt.cm.gray)
+plt.title('Gaussian')
+
+
 plt.show()
 
