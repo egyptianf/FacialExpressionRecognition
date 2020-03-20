@@ -2,13 +2,6 @@ import cv2
 import os
 import platform
 import glob
-import matplotlib.pyplot as plt
-
-
-
-
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 
