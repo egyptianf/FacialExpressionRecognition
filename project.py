@@ -1,12 +1,17 @@
 import cv2
 import os
+import platform
 import glob
 import numpy as np
 import matplotlib.pyplot as plt
-from PIL import Image  
 
-img_dir = "C:\\Users\\CRIZMA-MEGA STOR\\Desktop\\projectImage\\dataset"
-data_path = os.path.join(img_dir,'*')
+operating_system = platform.system()
+d = '/'
+if operating_system == 'Windows':
+    d = '\\'
+img_dir = "projectImage" + d + "dataset"
+data_path = os.path.join(img_dir, '*')
+
 files = glob.glob(data_path)
 dataset = []
 
@@ -16,22 +21,17 @@ for f1 in files:
     photos = glob.glob(dataset_path)
     dataset[-1] = []
     for f2 in photos:
-        img = Image.open(f2)
+        img = cv2.imread(f2)
         dataset[-1].append(img)
-    print(dataset[-1])
-im =Image.open( "C:\\Users\\CRIZMA-MEGA STOR\\Desktop\\projectImage\\dataset\\anger\\S010_004_00000017.png")
-plt.imshow(im)
-#******************************************************
+fig = plt.figure(figsize=(18, 18))
+im = cv2.imread("projectImage" + d + "dataset" + d + "anger" + d + "S010_004_00000017.png")
+im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+gray = im
 
-img = cv2.imread('C:\\Users\\CRIZMA-MEGA STOR\\Desktop\\imageProject\\projectImage\\dataset\\anger\\S010_004_00000017.png')
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-#*******************************************************
 avg_img = cv2.blur(gray.astype(np.float32),(3,3))
 #*******************************************************
 median_img = cv2.medianBlur(gray.astype(np.float32),3,3)
 #*******************************************************
-
 imgSobX = cv2.Sobel(gray, cv2.CV_8U, 1, 0, ksize=3) 
 imgSobY = cv2.Sobel(gray, cv2.CV_8U, 0, 1, ksize=3) 
 imgSobel = imgSobX + imgSobY
@@ -43,24 +43,41 @@ img_perx = cv2.filter2D(gray,-1,kernelx)
 img_pery = cv2.filter2D(gray,-1,kernely)
 imgper = img_perx + img_pery
 
+fig.add_subplot(3, 3, 1)
+plt.imshow(im, cmap=plt.cm.gray)
+plt.title("Image", fontdict={'fontsize': 15})
+# Show the histogram of the image
+histg = cv2.calcHist([im], [0], None, [256], [0, 256])
 
+fig.add_subplot(3, 3, 2)
+plt.plot(histg)
+plt.title("Histogram", fontdict={'fontsize': 15})
 
-plt.subplot(221)
+# Perform Histogram Equalization
+equalized = cv2.equalizeHist(im)
+fig.add_subplot(3, 3, 3)
+plt.imshow(equalized, cmap=plt.cm.gray)
+plt.title("Equalized", fontdict={'fontsize': 15})
+
+equ_histg = cv2.calcHist([equalized], [0], None, [256], [0, 256])
+fig.add_subplot(3, 3, 4)
+plt.plot(equ_histg)
+plt.title("Equalized Histogram", fontdict={'fontsize': 15})
+
+fig.add_subplot(3, 3, 5)
 plt.imshow(avg_img,'gray')
 plt.title('average filter')
-plt.plot()
 
-plt.subplot(222)
+fig.add_subplot(3, 3, 6)
 plt.imshow(median_img,'gray')
 plt.title('median filter')
-plt.plot()
 
-plt.subplot(223)
+fig.add_subplot(3, 3, 7)
 plt.imshow(imgSobel, cmap=plt.cm.gray)
 plt.title('Sobel')
-plt.plot()
 
-plt.subplot(223)
+fig.add_subplot(3, 3, 8)
 plt.imshow(imgper, cmap=plt.cm.gray)
 plt.title('Perwitt')
-plt.plot()
+plt.show()
+
