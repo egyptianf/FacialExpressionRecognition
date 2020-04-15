@@ -6,6 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 from image import Image
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 
 operating_system = platform.system()
 d = '/'
@@ -31,7 +33,7 @@ images = []
 image_path = "projectImage" + d + "dataset" + d + "anger" + d + "S022_005_00000030.png"
 im = cv2.imread(image_path)
 fearing_im = cv2.imread('projectImage' + d + 'dataset' + d + 'fear' + d + 'S011_003_00000013.png')
-#im = fearing_im
+# im = fearing_im
 im = cv2.cvtColor(im, cv2.COLOR_RGB2GRAY)
 height, width = im.shape
 im = im[3:height - 3, 5:width - 5]
@@ -104,7 +106,7 @@ modified_value = contrast_stretch(im)
 images.append(Image('Contrast Stretching', modified_value))
 blur = cv2.GaussianBlur(equalized, (5, 5), 0)
 images.append(Image('Gaussian', blur))
-laplacian = cv2.Laplacian(cv2.cvtColor(blur, cv2.COLOR_BGR2RGB),cv2.CV_64F)
+laplacian = cv2.Laplacian(cv2.cvtColor(blur, cv2.COLOR_BGR2RGB), cv2.CV_64F)
 images.append(Image('Laplacian', laplacian))
 
 
@@ -162,15 +164,28 @@ smoothed_invLaplacian = cv2.medianBlur(inverted_laplacian.astype(np.float32), 3,
 images.append(Image('Smoothed', smoothed_invLaplacian))
 smoothed_gray = cv2.cvtColor(smoothed_invLaplacian, cv2.COLOR_RGB2GRAY)
 smoothed_gray = smoothed_gray.astype('uint8')
-(thresh, bw_canny) = cv2.threshold(edges, 127, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-images.append(Image('BW Canny', bw_canny))
-print(bw_canny)
 
-for i in range(len(images)):
-    fig.add_subplot(4, 4, i + 1)
-    if 'histogram' in images[i].label.lower():
-        plt.plot(images[i].image)
-    else:
-        plt.imshow(images[i].image, cmap=plt.cm.gray)
-    plt.title(images[i].label)
-plt.show()
+
+# Feature extraction section
+
+sc = StandardScaler()
+dataset = [im.flatten().astype('float32') for i in range(10000)]
+dataset = sc.fit_transform(dataset)
+pca = PCA(n_components=10)
+print("data set shape", dataset.shape)
+dataset = pca.fit_transform(dataset)
+explained_variance = pca.explained_variance_ratio_
+print(explained_variance)
+
+
+def plot_images(_images, _fig, _plt):
+    for i in range(len(_images)):
+        _fig.add_subplot(4, 4, i + 1)
+        if 'histogram' in _images[i].label.lower():
+            _plt.plot(_images[i].image)
+        else:
+            _plt.imshow(_images[i].image, cmap=plt.cm.gray)
+        _plt.title(_images[i].label)
+    _plt.show()
+
+plot_images(images, fig, plt)
