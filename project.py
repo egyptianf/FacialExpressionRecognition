@@ -165,23 +165,27 @@ images.append(Image('Smoothed', smoothed_invLaplacian))
 smoothed_gray = cv2.cvtColor(smoothed_invLaplacian, cv2.COLOR_RGB2GRAY)
 smoothed_gray = smoothed_gray.astype('uint8')
 
-# sc = StandardScaler()
+
+# Feature extraction section
+
+sc = StandardScaler()
+dataset = [im.flatten().astype('float32') for i in range(10000)]
+dataset = sc.fit_transform(dataset)
 pca = PCA(n_components=10)
-dataset = [edges.flatten()]
-# dataset = sc.fit_transform(dataset)
-dataset = np.array(dataset)
-print(dataset[0])
 print("data set shape", dataset.shape)
 dataset = pca.fit_transform(dataset)
-# explained_variance = pca.explained_variance_ratio_
+explained_variance = pca.explained_variance_ratio_
+print(explained_variance)
 
-print(dataset[0])
 
-for i in range(len(images)):
-    fig.add_subplot(4, 4, i + 1)
-    if 'histogram' in images[i].label.lower():
-        plt.plot(images[i].image)
-    else:
-        plt.imshow(images[i].image, cmap=plt.cm.gray)
-    plt.title(images[i].label)
-plt.show()
+def plot_images(_images, _fig, _plt):
+    for i in range(len(_images)):
+        _fig.add_subplot(4, 4, i + 1)
+        if 'histogram' in _images[i].label.lower():
+            _plt.plot(_images[i].image)
+        else:
+            _plt.imshow(_images[i].image, cmap=plt.cm.gray)
+        _plt.title(_images[i].label)
+    _plt.show()
+
+plot_images(images, fig, plt)
