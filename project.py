@@ -111,12 +111,48 @@ plt.imshow(equalized, cmap=plt.cm.gray)
 plt.title("Equalized")
 
 
-
-
-
 blur = cv2.GaussianBlur(equalized,(5,5),0)
 laplacian = cv2.Laplacian(cv2.cvtColor(blur, cv2.COLOR_BGR2RGB),cv2.CV_64F)
-
+def Zero_crossing(im, laplacian):
+    z_c_im = np.zeros(im.shape)
+    
+    # For each pixel, count the number of positive
+    # and negative pixels in the neighborhood
+    
+    for i in range(1, laplacian.shape[0] - 1):
+        for j in range(1, laplacian.shape[1] - 1):
+            negative_count = 0
+            positive_count = 0
+            neighbour = [laplacian[i+1, j-1],laplacian[i+1, j],laplacian[i+1, j+1],laplacian[i, j-1],laplacian[i, j+1],laplacian[i-1, j-1],laplacian[i-1, j],laplacian[i-1, j+1]]
+            d1 = max(neighbour)
+            e = min(neighbour)
+            for h in neighbour:
+                if h>0:
+                    positive_count += 1
+                elif h<0:
+                    negative_count += 1
+ 
+ 
+            # If both negative and positive values exist in 
+            # the pixel neighborhood, then that pixel is a 
+            # potential zero crossing
+            
+            z_c = ((negative_count > 0) and (positive_count > 0))
+            
+            # Change the pixel value with the maximum neighborhood
+            # difference with the pixel
+ 
+            if z_c:
+                if laplacian[i,j]>0:
+                    z_c_im[i, j] = laplacian[i,j] + np.abs(e)
+                elif laplacian[i,j]<0:
+                    z_c_im[i, j] = np.abs(laplacian[i,j]) + d1
+                
+    # Normalize and change datatype to 'uint8' (optional)
+    z_c_norm = z_c_im/z_c_im.max()*255
+    z_c_im = np.uint8(z_c_norm)
+ 
+    return z_c_im
 edges = cv2.Canny(blur,100,200)
 
 sobelx = cv2.Sobel((cv2.cvtColor(blur, cv2.COLOR_BGR2RGB)),cv2.CV_64F,1,0,ksize=5)  # x
@@ -162,7 +198,7 @@ img_pery = cv2.filter2D(blur,-1,kernely)
 imgper = img_perx + img_pery
 
 
-plt.subplot(4,4,12),plt.imshow(laplacian,cmap = 'gray')
+plt.subplot(4,4,12),plt.imshow( laplacian,cmap = 'gray')
 plt.title('Laplacian'), plt.xticks([]), plt.yticks([])
 
 plt.subplot(4,4,13),plt.imshow(edges,cmap = 'gray')
